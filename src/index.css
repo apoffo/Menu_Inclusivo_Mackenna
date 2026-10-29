@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-main: #f8fafc;
+    --text-main: #0f172a;
+    --card-bg: #ffffff;
+    --border-color: #cbd5e1;
+    --accent-color: #0284c7;
+    --accent-contrast: #ffffff;
+    --badge-bg: #dcfce7;
+    --badge-text: #166534;
+  }
+
+  /* Modo Alto Contraste: Blanco sobre Negro */
+  html.contrast-black-white {
+    --bg-main: #000000 !important;
+    --text-main: #ffffff !important;
+    --card-bg: #121212 !important;
+    --border-color: #ffffff !important;
+    --accent-color: #ffffff !important;
+    --accent-contrast: #000000 !important;
+    --badge-bg: #000000 !important;
+    --badge-text: #ffffff !important;
+  }
+
+  /* Modo Alto Contraste: Amarillo sobre Negro (Baja Visión) */
+  html.contrast-yellow-black {
+    --bg-main: #000000 !important;
+    --text-main: #ffff00 !important;
+    --card-bg: #0a0a00 !important;
+    --border-color: #ffff00 !important;
+    --accent-color: #ffff00 !important;
+    --accent-contrast: #000000 !important;
+    --badge-bg: #000000 !important;
+    --badge-text: #ffff00 !important;
+  }
+
+  /* Escalas de Fuente */
+  html.font-scale-normal {
+    font-size: 16px;
+  }
+  html.font-scale-large {
+    font-size: 19px;
+  }
+  html.font-scale-extralarge {
+    font-size: 22px;
+  }
+
+  /* Familias tipográficas accesibles */
+  html.font-accessible {
+    font-family: 'Verdana', 'Segoe UI', Tahoma, Geneva, sans-serif !important;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    min-height: 100vh;
+    transition: background-color 0.2s ease, color 0.2s ease, font-size 0.2s ease;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Enfoque visible universal para navegación por teclado (WCAG 2.1 AA) */
+  *:focus-visible {
+    outline: 3px solid #0284c7 !important;
+    outline-offset: 3px !important;
+  }
+
+  html.contrast-black-white *:focus-visible {
+    outline: 3px solid #ffffff !important;
+  }
+
+  html.contrast-yellow-black *:focus-visible {
+    outline: 3px solid #ffff00 !important;
+  }
+}
+
+/* Estilos de impresión */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

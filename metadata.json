@@ -1,0 +1,6 @@
+{
+  "name": "Menú Inclusivo",
+  "description": "Plataforma accesible de cartas gastronómicas con pictogramas ARASAAC y sistema Braille para bares, restaurantes y cafeterías.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

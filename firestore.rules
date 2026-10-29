@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "o.andrespoffo@gmail.com" ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    function isVenueOwner(venueId) {
+      return isSignedIn() && (
+        isAdmin() ||
+        (exists(/databases/$(database)/documents/venues/$(venueId)) &&
+         get(/databases/$(database)/documents/venues/$(venueId)).data.ownerId == request.auth.uid)
+      );
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Venues collection (publicly accessible menu directory)
+    match /venues/{venueId} {
+      allow read: if true; // Public directory for visitors
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (isVenueOwner(venueId) || isAdmin());
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.ownerId == request.auth.uid);
+
+      // Subcollection: Categories
+      match /categories/{categoryId} {
+        allow read: if true;
+        allow create, update, delete: if isVenueOwner(venueId);
+      }
+
+      // Subcollection: Products
+      match /products/{productId} {
+        allow read: if true;
+        allow create, update, delete: if isVenueOwner(venueId);
+      }
+    }
+  }
+}

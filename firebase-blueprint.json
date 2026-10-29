@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Usuario registrado del sistema (comercio o administrador municipal)",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 128 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["merchant", "admin"] },
+        "venueId": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["email", "displayName", "role"]
+    },
+    "Venue": {
+      "title": "Venue",
+      "description": "Comercio gastronómico adherido",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 120 },
+        "rubro": { "type": "string", "enum": ["bar", "restaurante", "cafeteria", "heladeria", "otro"] },
+        "address": { "type": "string", "maxLength": 200 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "hours": { "type": "string", "maxLength": 100 },
+        "logoUrl": { "type": "string", "maxLength": 500 },
+        "coverUrl": { "type": "string", "maxLength": 500 },
+        "isVerified": { "type": "boolean" },
+        "isSuspended": { "type": "boolean" },
+        "ownerId": { "type": "string", "maxLength": 128 },
+        "ownerEmail": { "type": "string", "maxLength": 128 },
+        "highlightedProductIds": { "type": "array" },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["name", "rubro", "address", "ownerId"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Categoría de la carta gastronómica",
+      "type": "object",
+      "properties": {
+        "venueId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 80 },
+        "order": { "type": "number" }
+      },
+      "required": ["venueId", "name", "order"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Plato o bebida del menú accesible",
+      "type": "object",
+      "properties": {
+        "venueId": { "type": "string", "maxLength": 128 },
+        "categoryId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 120 },
+        "foreignTranslation": { "type": "string", "maxLength": 120 },
+        "description": { "type": "string", "maxLength": 500 },
+        "price": { "type": "number" },
+        "imageUrl": { "type": "string", "maxLength": 500 },
+        "imageAlt": { "type": "string", "maxLength": 250 },
+        "isAvailable": { "type": "boolean" },
+        "isHighlighted": { "type": "boolean" },
+        "tags": { "type": "array" },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["venueId", "categoryId", "name", "description", "price", "imageAlt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Perfil de usuario comercio o administrador"
+    },
+    "/venues/{venueId}": {
+      "schema": { "$ref": "#/entities/Venue" },
+      "description": "Comercios registrados"
+    },
+    "/venues/{venueId}/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Categorías de platos del comercio"
+    },
+    "/venues/{venueId}/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Productos accesibles con pictograma y descripción"
+    }
+  }
+}
